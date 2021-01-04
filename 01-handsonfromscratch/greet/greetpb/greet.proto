@@ -3,4 +3,23 @@ syntax="proto3";
 package greet;
 option go_package="cognologix.com/greetpb";
 
-service GreetService{}
+message Greeting {
+    string first_name = 1;
+    string last_name = 2;
+}
+
+message GreetRequest {
+    Greeting greeting = 1;
+}
+
+message GreetResponse {
+    string result = 1;
+}
+
+service GreetService{
+    //Unary API
+    // Signature - DoSomething(DoSomethingRequest) returns (DoSomethingResponse) {}
+    // Example - Find(FindRequest) returns (FindResponse) {}
+    rpc Greet(GreetRequest) returns (GreetResponse) {}
+}
+
