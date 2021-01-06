@@ -1,0 +1,43 @@
+syntax="proto3";
+
+option go_package="cognologix.com/datatypespb";
+
+message DataTypeRequest {
+    double d = 1;
+    float f = 2;
+    int32 i32 = 3;
+    int64 i64 = 4;
+    uint32 ui32 = 5;
+    uint64 ui64 = 6;
+    sint32 si32 = 7;
+    sint64 si64 = 8;
+    fixed32 fxd32 = 9;
+    fixed64 fxd64 = 10;
+    sfixed32 sfxd32 = 11;
+    sfixed64 sfxd64 = 12;
+    bool b = 13;
+    string s = 14;
+    bytes bts = 15;
+}
+
+message DataTypeResponse {
+    double d = 1;
+    float f = 2;
+    int32 i32 = 3;
+    int64 i64 = 4;
+    uint32 ui32 = 5;
+    uint64 ui64 = 6;
+    sint32 si32 = 7;
+    sint64 si64 = 8;
+    fixed32 fxd32 = 9;
+    fixed64 fxd64 = 10;
+    sfixed32 sfxd32 = 11;
+    sfixed64 sfxd64 = 12;
+    bool b = 13;
+    string s = 14;
+    bytes bts = 15;
+}
+
+service DataTypeService {
+    rpc TestRPC(DataTypeRequest) returns (DataTypeResponse){}
+}
