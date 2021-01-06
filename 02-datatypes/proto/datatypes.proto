@@ -2,7 +2,7 @@ syntax="proto3";
 
 option go_package="cognologix.com/datatypespb";
 
-message DataTypeRequest {
+message ScalarDataTypeRequest {
     double d = 1;
     float f = 2;
     int32 i32 = 3;
@@ -20,7 +20,10 @@ message DataTypeRequest {
     bytes bts = 15;
 }
 
-message DataTypeResponse {
+message ScalarDataTypeResponse {
+    // Reserving field numbers
+    // reserved 11 to 20;
+    reserved "name"; // Reserving field name
     double d = 1;
     float f = 2;
     int32 i32 = 3;
@@ -37,7 +40,32 @@ message DataTypeResponse {
     string s = 14;
     bytes bts = 15;
 }
+
+message EnumerationRequest {
+    reserved 1 to 5;
+    enum Planet {
+        SUN = 0;
+        MERCURY = 1;
+        VENUS = 2;
+        EARTH = 3;
+        MARS = 4;
+        JUPITER = 5;
+        SATURN = 6;
+        URANUS = 7;
+        NEPTUNE = 8;
+        PLUTO = 9;
+    }
+    
+    repeated Planet planet = 6;
+}
+
+message EnumerationResponse {
+    repeated string planet = 1;
+}
+
 
 service DataTypeService {
-    rpc TestRPC(DataTypeRequest) returns (DataTypeResponse){}
+    rpc TestScalarDataType(ScalarDataTypeRequest) returns (ScalarDataTypeResponse){}
+    rpc TestEnumDataType(EnumerationRequest) returns (EnumerationResponse){}
+
 }

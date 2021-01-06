@@ -14,7 +14,7 @@ type server struct {
 	pb.UnimplementedDataTypeServiceServer
 }
 
-func (s *server) TestRPC(ctx context.Context, req *pb.DataTypeRequest) (*pb.DataTypeResponse, error) {
+func (s *server) TestScalarDataType(ctx context.Context, req *pb.ScalarDataTypeRequest) (*pb.ScalarDataTypeResponse, error) {
 	d := req.GetD()
 	f := req.GetF()
 	i32 := req.GetI32()
@@ -46,7 +46,7 @@ func (s *server) TestRPC(ctx context.Context, req *pb.DataTypeRequest) (*pb.Data
 	fmt.Printf("s: %v, Type s: %T\n", str, str)
 	fmt.Printf("bts: %v, Type bts: %T\n", bts, bts)
 	// fmt.Printf("req *.pb.DataTypeRequest -\n %v", req)
-	res := &pb.DataTypeResponse{
+	res := &pb.ScalarDataTypeResponse{
 		D:      d,
 		F:      f,
 		I32:    i32,
@@ -60,6 +60,19 @@ func (s *server) TestRPC(ctx context.Context, req *pb.DataTypeRequest) (*pb.Data
 		B:      b,
 		S:      str,
 		Bts:    bts,
+	}
+	return res, nil
+}
+
+func (s *server) TestEnumDataType(ctx context.Context, req *pb.EnumerationRequest) (*pb.EnumerationResponse, error) {
+	planets := req.GetPlanet()
+	fmt.Printf("d: %v, Type d: %T\n", planets, planets)
+	var planetsStrArray []string
+	for _, planet := range planets {
+		planetsStrArray = append(planetsStrArray, pb.EnumerationRequest_Planet_name[int32(planet)])
+	}
+	res := &pb.EnumerationResponse{
+		Planet: planetsStrArray,
 	}
 	return res, nil
 }

@@ -22,7 +22,12 @@ func main() {
 	}
 	defer conn.Close()
 	gClient := pb.NewDataTypeServiceClient(conn)
-	req := &pb.DataTypeRequest{
+	// doScalarCall(gClient)
+	doEnumCall(gClient)
+}
+
+func doScalarCall(client pb.DataTypeServiceClient) {
+	req := &pb.ScalarDataTypeRequest{
 		D:      1.61803398875, //Golden Ratio
 		F:      9.10938356,    // Mass of an electron
 		I32:    5,
@@ -37,7 +42,7 @@ func main() {
 		S:      "I am not one of the X-Men :(",
 		Bts:    []byte{5, 2, 5, 2, 8, 43},
 	}
-	res, err := gClient.TestRPC(context.Background(), req)
+	res, err := client.TestScalarDataType(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Error calling TestRPC: %v", err)
 	}
@@ -71,4 +76,15 @@ func main() {
 	fmt.Printf("b: %v, Type b: %T\n", b, b)
 	fmt.Printf("s: %v, Type s: %T\n", s, s)
 	fmt.Printf("bts: %v, Type bts: %T\n", bts, bts)
+}
+
+func doEnumCall(client pb.DataTypeServiceClient) {
+	req := &pb.EnumerationRequest{
+		Planet: []pb.EnumerationRequest_Planet{pb.EnumerationRequest_EARTH, pb.EnumerationRequest_MARS},
+	}
+	res, err := client.TestEnumDataType(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error calling TestRPC: %v", err)
+	}
+	fmt.Println(res)
 }
