@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	pb "../../proto/cognologix.com/datatypespb"
+	datatypespb "../../proto/cognologix.com/datatypespb"
+	personpb "../../proto/cognologix.com/human/personpb"
 	"google.golang.org/grpc"
 )
 
@@ -21,13 +22,39 @@ func main() {
 		log.Fatalf("Failed to connect: %v", err)
 	}
 	defer conn.Close()
-	gClient := pb.NewDataTypeServiceClient(conn)
+	// gClient := datatypespb.NewDataTypeServiceClient(conn)
+	gClient := personpb.NewPersonServiceClient(conn)
 	// doScalarCall(gClient)
-	doEnumCall(gClient)
+	// doEnumCall(gClient)
+	addPerson(gClient, &personpb.PutPersonRequest{
+		Person: &personpb.Person{
+			FirstName: "Linus",
+			LastName:  "Torvalds",
+		},
+	})
+	getPerson(gClient, &personpb.GetPersonRequest{
+		Id: 1,
+	})
 }
 
-func doScalarCall(client pb.DataTypeServiceClient) {
-	req := &pb.ScalarDataTypeRequest{
+func addPerson(client personpb.PersonServiceClient, req *personpb.PutPersonRequest) {
+	res, err := client.PutPerson(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error calling TestRPC: %v", err)
+	}
+	fmt.Println(res)
+}
+
+func getPerson(client personpb.PersonServiceClient, req *personpb.GetPersonRequest) {
+	res, err := client.GetPerson(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error calling TestRPC: %v", err)
+	}
+	fmt.Println(res)
+}
+
+func doScalarCall(client datatypespb.DataTypeServiceClient) {
+	req := &datatypespb.ScalarDataTypeRequest{
 		D:      1.61803398875, //Golden Ratio
 		F:      9.10938356,    // Mass of an electron
 		I32:    5,
@@ -78,9 +105,9 @@ func doScalarCall(client pb.DataTypeServiceClient) {
 	fmt.Printf("bts: %v, Type bts: %T\n", bts, bts)
 }
 
-func doEnumCall(client pb.DataTypeServiceClient) {
-	req := &pb.EnumerationRequest{
-		Planet: []pb.EnumerationRequest_Planet{pb.EnumerationRequest_EARTH, pb.EnumerationRequest_MARS},
+func doEnumCall(client datatypespb.DataTypeServiceClient) {
+	req := &datatypespb.EnumerationRequest{
+		Planet: []datatypespb.EnumerationRequest_Planet{datatypespb.EnumerationRequest_EARTH, datatypespb.EnumerationRequest_MARS},
 	}
 	res, err := client.TestEnumDataType(context.Background(), req)
 	if err != nil {

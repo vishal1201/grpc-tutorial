@@ -55,6 +55,13 @@ message EnumerationRequest {
         NEPTUNE = 8;
         PLUTO = 9;
     }
+
+    enum EnumAllowingAlias {
+        option allow_alias = true;
+        UNKNOWN = 0;
+        STARTED = 1;
+        RUNNING = 1;
+    }
     
     repeated Planet planet = 6;
 }
@@ -67,5 +74,4 @@ message EnumerationResponse {
 service DataTypeService {
     rpc TestScalarDataType(ScalarDataTypeRequest) returns (ScalarDataTypeResponse){}
     rpc TestEnumDataType(EnumerationRequest) returns (EnumerationResponse){}
-
 }

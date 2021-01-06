@@ -1,0 +1,46 @@
+syntax="proto3";
+import "google/protobuf/timestamp.proto";
+
+option go_package="cognologix.com/human/personpb";
+
+
+message PhoneNumber {
+    string number = 1;
+    enum PhoneType {
+        MOBILE=0;
+        HOME=1;
+        WORK=2;
+    }
+    PhoneType ph_type=2;
+}
+
+message Person {
+    int64 id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string age = 4;   
+    repeated PhoneNumber phones=5;
+    google.protobuf.Timestamp last_updated = 6;
+}
+
+message GetPersonRequest {
+    int64 id=1;
+}
+
+message GetPersonResponse {
+    Person person=1;
+}
+
+message PutPersonRequest {
+    Person person=1;
+}
+
+message PutPersonResponse {
+    bool result=1;
+    int64 id=2;
+}
+
+service PersonService {
+    rpc GetPerson(GetPersonRequest) returns (GetPersonResponse){}
+    rpc PutPerson(PutPersonRequest) returns (PutPersonResponse){}
+}

@@ -6,15 +6,18 @@ import (
 	"log"
 	"net"
 
-	pb "../../proto/cognologix.com/datatypespb"
+	datatypespb "../../proto/cognologix.com/datatypespb"
+	personpb "../../proto/cognologix.com/human/personpb"
 	"google.golang.org/grpc"
 )
 
-type server struct {
-	pb.UnimplementedDataTypeServiceServer
+var people = make(map[int64]personpb.Person)
+
+type dataTypeServer struct {
+	datatypespb.UnimplementedDataTypeServiceServer
 }
 
-func (s *server) TestScalarDataType(ctx context.Context, req *pb.ScalarDataTypeRequest) (*pb.ScalarDataTypeResponse, error) {
+func (s *dataTypeServer) TestScalarDataType(ctx context.Context, req *datatypespb.ScalarDataTypeRequest) (*datatypespb.ScalarDataTypeResponse, error) {
 	d := req.GetD()
 	f := req.GetF()
 	i32 := req.GetI32()
@@ -46,7 +49,7 @@ func (s *server) TestScalarDataType(ctx context.Context, req *pb.ScalarDataTypeR
 	fmt.Printf("s: %v, Type s: %T\n", str, str)
 	fmt.Printf("bts: %v, Type bts: %T\n", bts, bts)
 	// fmt.Printf("req *.pb.DataTypeRequest -\n %v", req)
-	res := &pb.ScalarDataTypeResponse{
+	res := &datatypespb.ScalarDataTypeResponse{
 		D:      d,
 		F:      f,
 		I32:    i32,
@@ -64,28 +67,66 @@ func (s *server) TestScalarDataType(ctx context.Context, req *pb.ScalarDataTypeR
 	return res, nil
 }
 
-func (s *server) TestEnumDataType(ctx context.Context, req *pb.EnumerationRequest) (*pb.EnumerationResponse, error) {
+func (s *dataTypeServer) TestEnumDataType(ctx context.Context, req *datatypespb.EnumerationRequest) (*datatypespb.EnumerationResponse, error) {
 	planets := req.GetPlanet()
 	fmt.Printf("d: %v, Type d: %T\n", planets, planets)
 	var planetsStrArray []string
 	for _, planet := range planets {
-		planetsStrArray = append(planetsStrArray, pb.EnumerationRequest_Planet_name[int32(planet)])
+		planetsStrArray = append(planetsStrArray, datatypespb.EnumerationRequest_Planet_name[int32(planet)])
 	}
-	res := &pb.EnumerationResponse{
+	res := &datatypespb.EnumerationResponse{
 		Planet: planetsStrArray,
 	}
 	return res, nil
 }
 
+type personServer struct {
+	personpb.UnimplementedPersonServiceServer
+}
+
+func (p *personServer) GetPerson(ctx context.Context, req *personpb.GetPersonRequest) (*personpb.GetPersonResponse, error) {
+	id := req.GetId()
+	fmt.Printf("d: %v, Type d: %T\n", req, req)
+	person := people[id]
+	res := &personpb.GetPersonResponse{
+		Person: &person,
+	}
+	return res, nil
+}
+
+func (p *personServer) PutPerson(ctx context.Context, req *personpb.PutPersonRequest) (*personpb.PutPersonResponse, error) {
+	// person := req.GetPerson()
+	fmt.Printf("d: %v, Type d: %T\n", req, req)
+	newID := int64(len(people) + 1)
+	people[newID] = *req.GetPerson()
+	res := &personpb.PutPersonResponse{
+		Result: true,
+		Id:     newID,
+	}
+	return res, nil
+}
+
 func main() {
-	fmt.Println("DataTypes gRPC server")
 	lis, err := net.Listen("tcp", "0.0.0.0:50051")
 	if err != nil {
 		log.Fatalf("Could not listen to localhost: %v", err)
 	}
 	gServer := grpc.NewServer()
-	pb.RegisterDataTypeServiceServer(gServer, &server{})
-	if err := gServer.Serve(lis); err != nil {
+	// registerDataTypeServer(gServer, lis)
+	registerPersonServer(gServer, lis)
+}
+
+func registerDataTypeServer(gServer *grpc.Server, listener net.Listener) {
+	fmt.Println("DataTypes gRPC server")
+	datatypespb.RegisterDataTypeServiceServer(gServer, &dataTypeServer{})
+	if err := gServer.Serve(listener); err != nil {
+		log.Fatalf("Failed to listen: %v", err)
+	}
+}
+func registerPersonServer(gServer *grpc.Server, listener net.Listener) {
+	fmt.Println("Person gRPC server")
+	personpb.RegisterPersonServiceServer(gServer, &personServer{})
+	if err := gServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 }
