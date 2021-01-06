@@ -3,7 +3,6 @@ import "google/protobuf/timestamp.proto";
 
 option go_package="cognologix.com/human/personpb";
 
-
 message PhoneNumber {
     string number = 1;
     enum PhoneType {
@@ -18,7 +17,7 @@ message Person {
     int64 id = 1;
     string first_name = 2;
     string last_name = 3;
-    string age = 4;   
+    int32 age = 4;   
     repeated PhoneNumber phones=5;
     google.protobuf.Timestamp last_updated = 6;
 }

@@ -8,6 +8,7 @@ import (
 	datatypespb "../../proto/cognologix.com/datatypespb"
 	personpb "../../proto/cognologix.com/human/personpb"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // var (
@@ -30,6 +31,14 @@ func main() {
 		Person: &personpb.Person{
 			FirstName: "Linus",
 			LastName:  "Torvalds",
+			Phones: []*personpb.PhoneNumber{
+				&personpb.PhoneNumber{
+					Number: "1111111111",
+					PhType: personpb.PhoneNumber_HOME,
+				},
+			},
+			Age:         51,
+			LastUpdated: timestamppb.Now(),
 		},
 	})
 	getPerson(gClient, &personpb.GetPersonRequest{
