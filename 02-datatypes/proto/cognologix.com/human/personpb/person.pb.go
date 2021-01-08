@@ -635,7 +635,7 @@ var file_person_proto_rawDesc = []byte{
 	0x75, 0x74, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
 	0x12, 0x16, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08,
 	0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02,
-	0x20, 0x03, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x32, 0xd5, 0x01, 0x0a, 0x0d, 0x50, 0x65, 0x72,
+	0x20, 0x03, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x32, 0x9c, 0x02, 0x0a, 0x0d, 0x50, 0x65, 0x72,
 	0x73, 0x6f, 0x6e, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x40, 0x0a, 0x09, 0x47, 0x65,
 	0x74, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x12, 0x17, 0x2e, 0x68, 0x75, 0x6d, 0x61, 0x6e, 0x2e,
 	0x47, 0x65, 0x74, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
@@ -649,9 +649,14 @@ var file_person_proto_rawDesc = []byte{
 	0x6d, 0x61, 0x6e, 0x2e, 0x50, 0x75, 0x74, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x52, 0x65, 0x71,
 	0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x68, 0x75, 0x6d, 0x61, 0x6e, 0x2e, 0x50, 0x75, 0x74,
 	0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x42, 0x21, 0x48, 0x01, 0x5a, 0x1d, 0x63, 0x6f, 0x67, 0x6e, 0x6f, 0x6c, 0x6f, 0x67, 0x69, 0x78,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x68, 0x75, 0x6d, 0x61, 0x6e, 0x2f, 0x70, 0x65, 0x72, 0x73, 0x6f,
-	0x6e, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x12, 0x45, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x50, 0x65, 0x6f, 0x70, 0x6c, 0x65,
+	0x12, 0x17, 0x2e, 0x68, 0x75, 0x6d, 0x61, 0x6e, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x65, 0x72, 0x73,
+	0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x68, 0x75, 0x6d, 0x61,
+	0x6e, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x42, 0x21, 0x48, 0x01, 0x5a, 0x1d, 0x63, 0x6f, 0x67,
+	0x6e, 0x6f, 0x6c, 0x6f, 0x67, 0x69, 0x78, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x68, 0x75, 0x6d, 0x61,
+	0x6e, 0x2f, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -696,11 +701,13 @@ var file_person_proto_depIdxs = []int32{
 	5,  // 10: human.PersonService.GetPerson:input_type -> human.GetPersonRequest
 	7,  // 11: human.PersonService.PutPerson:input_type -> human.PutPersonRequest
 	7,  // 12: human.PersonService.PutPeople:input_type -> human.PutPersonRequest
-	6,  // 13: human.PersonService.GetPerson:output_type -> human.GetPersonResponse
-	8,  // 14: human.PersonService.PutPerson:output_type -> human.PutPersonResponse
-	8,  // 15: human.PersonService.PutPeople:output_type -> human.PutPersonResponse
-	13, // [13:16] is the sub-list for method output_type
-	10, // [10:13] is the sub-list for method input_type
+	5,  // 13: human.PersonService.GetAllPeople:input_type -> human.GetPersonRequest
+	6,  // 14: human.PersonService.GetPerson:output_type -> human.GetPersonResponse
+	8,  // 15: human.PersonService.PutPerson:output_type -> human.PutPersonResponse
+	8,  // 16: human.PersonService.PutPeople:output_type -> human.PutPersonResponse
+	6,  // 17: human.PersonService.GetAllPeople:output_type -> human.GetPersonResponse
+	14, // [14:18] is the sub-list for method output_type
+	10, // [10:14] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
 	10, // [10:10] is the sub-list for extension extendee
 	0,  // [0:10] is the sub-list for field type_name
@@ -849,6 +856,7 @@ type PersonServiceClient interface {
 	GetPerson(ctx context.Context, in *GetPersonRequest, opts ...grpc.CallOption) (*GetPersonResponse, error)
 	PutPerson(ctx context.Context, in *PutPersonRequest, opts ...grpc.CallOption) (*PutPersonResponse, error)
 	PutPeople(ctx context.Context, in *PutPersonRequest, opts ...grpc.CallOption) (*PutPersonResponse, error)
+	GetAllPeople(ctx context.Context, in *GetPersonRequest, opts ...grpc.CallOption) (PersonService_GetAllPeopleClient, error)
 }
 
 type personServiceClient struct {
@@ -886,11 +894,44 @@ func (c *personServiceClient) PutPeople(ctx context.Context, in *PutPersonReques
 	return out, nil
 }
 
+func (c *personServiceClient) GetAllPeople(ctx context.Context, in *GetPersonRequest, opts ...grpc.CallOption) (PersonService_GetAllPeopleClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_PersonService_serviceDesc.Streams[0], "/human.PersonService/GetAllPeople", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &personServiceGetAllPeopleClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type PersonService_GetAllPeopleClient interface {
+	Recv() (*GetPersonResponse, error)
+	grpc.ClientStream
+}
+
+type personServiceGetAllPeopleClient struct {
+	grpc.ClientStream
+}
+
+func (x *personServiceGetAllPeopleClient) Recv() (*GetPersonResponse, error) {
+	m := new(GetPersonResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // PersonServiceServer is the server API for PersonService service.
 type PersonServiceServer interface {
 	GetPerson(context.Context, *GetPersonRequest) (*GetPersonResponse, error)
 	PutPerson(context.Context, *PutPersonRequest) (*PutPersonResponse, error)
 	PutPeople(context.Context, *PutPersonRequest) (*PutPersonResponse, error)
+	GetAllPeople(*GetPersonRequest, PersonService_GetAllPeopleServer) error
 }
 
 // UnimplementedPersonServiceServer can be embedded to have forward compatible implementations.
@@ -905,6 +946,9 @@ func (*UnimplementedPersonServiceServer) PutPerson(context.Context, *PutPersonRe
 }
 func (*UnimplementedPersonServiceServer) PutPeople(context.Context, *PutPersonRequest) (*PutPersonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutPeople not implemented")
+}
+func (*UnimplementedPersonServiceServer) GetAllPeople(*GetPersonRequest, PersonService_GetAllPeopleServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetAllPeople not implemented")
 }
 
 func RegisterPersonServiceServer(s *grpc.Server, srv PersonServiceServer) {
@@ -965,6 +1009,27 @@ func _PersonService_PutPeople_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PersonService_GetAllPeople_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetPersonRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(PersonServiceServer).GetAllPeople(m, &personServiceGetAllPeopleServer{stream})
+}
+
+type PersonService_GetAllPeopleServer interface {
+	Send(*GetPersonResponse) error
+	grpc.ServerStream
+}
+
+type personServiceGetAllPeopleServer struct {
+	grpc.ServerStream
+}
+
+func (x *personServiceGetAllPeopleServer) Send(m *GetPersonResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 var _PersonService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "human.PersonService",
 	HandlerType: (*PersonServiceServer)(nil),
@@ -982,6 +1047,12 @@ var _PersonService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _PersonService_PutPeople_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetAllPeople",
+			Handler:       _PersonService_GetAllPeople_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "person.proto",
 }

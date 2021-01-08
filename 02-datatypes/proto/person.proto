@@ -56,8 +56,10 @@ message PutPersonResponse {
     repeated int64 id=2;
 }
 
+
 service PersonService {
     rpc GetPerson(GetPersonRequest) returns (GetPersonResponse){}
     rpc PutPerson(PutPersonRequest) returns (PutPersonResponse){}
     rpc PutPeople(PutPersonRequest) returns (PutPersonResponse){}
+    rpc GetAllPeople(GetPersonRequest) returns (stream GetPersonResponse){}
 }

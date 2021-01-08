@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	datatypespb "../../proto/cognologix.com/datatypespb"
 	personpb "../../proto/cognologix.com/human/personpb"
@@ -109,6 +110,18 @@ func (p *personServer) PutPerson(ctx context.Context, req *personpb.PutPersonReq
 		Id:     ids,
 	}
 	return res, nil
+}
+
+func (p *personServer) GetAllPeople(req *personpb.GetPersonRequest, stream personpb.PersonService_GetAllPeopleServer) error {
+	log.Println("GetAllPeople() invoked")
+	for _, person := range people {
+		res := &personpb.GetPersonResponse{
+			Person: &person,
+		}
+		stream.Send(res)
+		time.Sleep(2000 * time.Millisecond)
+	}
+	return nil
 }
 
 func main() {

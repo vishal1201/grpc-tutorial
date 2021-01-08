@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 
 	datatypespb "../../proto/cognologix.com/datatypespb"
@@ -49,9 +50,29 @@ func main() {
 	// 	year:  1994,
 	// })
 	addPerson(gClient, &personpb.PutPersonRequest{Person: getPeople()})
-	getPerson(gClient, &personpb.GetPersonRequest{
-		Id: 3,
-	})
+	// getPerson(gClient, &personpb.GetPersonRequest{
+	// 	Id: 3,
+	// })
+	getAllPeople(gClient, &personpb.GetPersonRequest{Id: 2})
+}
+
+func getAllPeople(client personpb.PersonServiceClient, req *personpb.GetPersonRequest) {
+	resultStream, err := client.GetAllPeople(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error calling TestRPC: %v", err)
+	}
+	for {
+		msg, err := resultStream.Recv()
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			log.Fatalf("Error getting data from stream: %v", err)
+		}
+		fmt.Printf("Got Person: %v\n", msg.GetPerson())
+	}
+	fmt.Println(resultStream)
 }
 
 func addPerson(client personpb.PersonServiceClient, req *personpb.PutPersonRequest) {
@@ -133,8 +154,7 @@ func doEnumCall(client datatypespb.DataTypeServiceClient) {
 	fmt.Println(res)
 }
 
-
-func getPeople() []*personpb.Person{
+func getPeople() []*personpb.Person {
 	return []*personpb.Person{
 		{
 			FirstName: "Linus",
@@ -205,4 +225,5 @@ func getPeople() []*personpb.Person{
 				},
 			},
 		},
+	}
 }
