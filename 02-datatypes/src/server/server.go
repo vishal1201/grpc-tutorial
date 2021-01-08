@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"time"
@@ -122,6 +123,29 @@ func (p *personServer) GetAllPeople(req *personpb.GetPersonRequest, stream perso
 		time.Sleep(2000 * time.Millisecond)
 	}
 	return nil
+}
+
+func (p *personServer) PutPeople(stream personpb.PersonService_PutPeopleServer) error {
+	var ids []int64
+	for {
+		req, err := stream.Recv()
+		// fmt.Printf("Received!: %v\n", req)
+		if err == io.EOF {
+			return stream.SendAndClose(&personpb.PutPersonResponse{
+				Result: true,
+				Id:     ids,
+			})
+		}
+		if err != nil {
+			log.Fatalf("Error receving data from stream: %v", err)
+		}
+		for _, person := range req.GetPerson() {
+			id := int64(len(people) + 1)
+			people[id] = *person
+			ids = append(ids, id)
+		}
+		fmt.Printf("People: %v \n ids: %v\n", people, ids)
+	}
 }
 
 func main() {

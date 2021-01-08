@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"time"
 
 	datatypespb "../../proto/cognologix.com/datatypespb"
 	personpb "../../proto/cognologix.com/human/personpb"
@@ -34,7 +35,7 @@ import (
 // }
 
 func main() {
-	fmt.Println("DataTypes gRPC client")
+	fmt.Println("Person gRPC client")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Failed to connect: %v", err)
@@ -49,11 +50,48 @@ func main() {
 	// 	month: 12,
 	// 	year:  1994,
 	// })
-	addPerson(gClient, &personpb.PutPersonRequest{Person: getPeople()})
+	// addPerson(gClient, &personpb.PutPersonRequest{Person: getPeople()})
 	// getPerson(gClient, &personpb.GetPersonRequest{
 	// 	Id: 3,
 	// })
+	putPeople(gClient)
 	getAllPeople(gClient, &personpb.GetPersonRequest{Id: 2})
+}
+
+func putPeople(client personpb.PersonServiceClient) {
+	stream, err := client.PutPeople(context.Background())
+	peopleSlice := getPeople()
+	requests := []*personpb.PutPersonRequest{
+		&personpb.PutPersonRequest{
+			Person: []*personpb.Person{
+				peopleSlice[0],
+			},
+		},
+		&personpb.PutPersonRequest{
+			Person: []*personpb.Person{
+				peopleSlice[1],
+			},
+		},
+		&personpb.PutPersonRequest{
+			Person: []*personpb.Person{
+				peopleSlice[2],
+			},
+		},
+	}
+	if err != nil {
+		log.Fatalf("Error calling PutPeople stream API: %v", err)
+	}
+	for _, req := range requests {
+		fmt.Printf("Sending -> %v\n", req)
+		stream.Send(req)
+		time.Sleep(1000 * time.Millisecond)
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Fatalf("error while receiving response from PutPeople stream: %v", err)
+	}
+	fmt.Printf("Reponse: %v\n", res)
 }
 
 func getAllPeople(client personpb.PersonServiceClient, req *personpb.GetPersonRequest) {
