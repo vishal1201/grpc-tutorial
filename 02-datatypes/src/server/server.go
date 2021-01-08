@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"io"
 	"log"
 	"net"
+	"os"
+	"strings"
 	"time"
 
 	datatypespb "../../proto/cognologix.com/datatypespb"
@@ -146,6 +149,81 @@ func (p *personServer) PutPeople(stream personpb.PersonService_PutPeopleServer) 
 		}
 		fmt.Printf("People: %v \n ids: %v\n", people, ids)
 	}
+}
+
+func (p *personServer) Chat(stream personpb.PersonService_ChatServer) error {
+	waitc := make(chan struct{})
+	// send a bunch of messages to the server using go routine
+	go func() {
+		scanner := bufio.NewScanner(os.Stdin)
+
+		for scanner.Scan() {
+			fmt.Print("Send: ")
+			if scanner.Text() != "\n" {
+				replyMsg := scanner.Text()
+				err := stream.Send(&personpb.ChatResponse{Message: replyMsg})
+				if err != nil {
+					log.Fatalf("Error sending message to chat server: %v", err)
+					return
+				}
+			}
+
+			if strings.ToLower(strings.Trim(scanner.Text(), " ")) == "end" {
+				return
+			}
+		}
+	}()
+
+	// received a bunch of message from the server using go routine
+	go func() {
+		for {
+			req, err := stream.Recv()
+			if err != nil {
+				log.Fatalf("Error sending message to chat server: %v", err)
+				return
+			}
+			receivedMsg := req.GetMessage()
+			fmt.Printf("Received: %v\n", receivedMsg)
+			if (err == io.EOF) || (strings.ToLower(strings.Trim(receivedMsg, " ")) == "bye") {
+				close(waitc)
+			}
+			if err != nil {
+				log.Fatalf("Error receiving message from chat client: %v", err)
+				return
+				close(waitc)
+			}
+		}
+	}()
+
+	<-waitc
+	return nil
+	// for {
+	// 	req, err := stream.Recv()
+	// 	receivedMsg := req.GetMessage()
+	// 	fmt.Printf("Received: %v\n", req)
+	// 	if (err == io.EOF) || (strings.ToLower(strings.Trim(receivedMsg, " ")) == "bye") {
+	// 		return nil
+	// 	}
+	// 	if err != nil {
+	// 		log.Fatalf("Error receiving message from chat client: %v", err)
+	// 		return err
+	// 	}
+	// 	for scanner.Scan() {
+	// 		fmt.Print("Send: ")
+	// 		if scanner.Text() != "\n" {
+	// 			replyMsg := scanner.Text()
+	// 			err := stream.Send(&personpb.ChatResponse{Message: replyMsg})
+	// 			if err != nil {
+	// 				log.Fatalf("Error sending message to chat client: %v", err)
+	// 				return err
+	// 			}
+	// 		}
+
+	// 		if strings.ToLower(strings.Trim(scanner.Text(), " ")) == "end" {
+	// 			return nil
+	// 		}
+	// 	}
+	// }
 }
 
 func main() {

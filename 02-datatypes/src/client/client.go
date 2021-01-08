@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"io"
 	"log"
+	"os"
+	"strings"
 	"time"
 
 	datatypespb "../../proto/cognologix.com/datatypespb"
@@ -54,8 +57,9 @@ func main() {
 	// getPerson(gClient, &personpb.GetPersonRequest{
 	// 	Id: 3,
 	// })
-	putPeople(gClient)
-	getAllPeople(gClient, &personpb.GetPersonRequest{Id: 2})
+	// putPeople(gClient)
+	// getAllPeople(gClient, &personpb.GetPersonRequest{Id: 2})
+	chat(gClient)
 }
 
 func putPeople(client personpb.PersonServiceClient) {
@@ -127,6 +131,56 @@ func getPerson(client personpb.PersonServiceClient, req *personpb.GetPersonReque
 		log.Fatalf("Error calling TestRPC: %v", err)
 	}
 	fmt.Println(res)
+}
+
+func chat(client personpb.PersonServiceClient) {
+	stream, err := client.Chat(context.Background())
+	if err != nil {
+		log.Fatalf("Error getting client stream: %v", err)
+	}
+	waitc := make(chan struct{})
+	// send a bunch of messages to the server using go routine
+	go func() {
+		scanner := bufio.NewScanner(os.Stdin)
+
+		for scanner.Scan() {
+			fmt.Print("Send: ")
+			if scanner.Text() != "\n" {
+				replyMsg := scanner.Text()
+				err := stream.Send(&personpb.ChatRequest{Message: replyMsg})
+				if err != nil {
+					log.Fatalf("Error sending message to chat server: %v", err)
+					return
+				}
+			}
+
+			if strings.ToLower(strings.Trim(scanner.Text(), " ")) == "end" {
+				stream.CloseSend()
+			}
+		}
+	}()
+
+	// received a bunch of message from the server using go routine
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err != nil {
+				log.Fatalf("Error sending message to chat server: %v", err)
+				return
+			}
+			receivedMsg := res.GetMessage()
+			fmt.Printf("Received: %v\n", receivedMsg)
+			if (err == io.EOF) || (strings.ToLower(strings.Trim(receivedMsg, " ")) == "bye") {
+				close(waitc)
+			}
+			if err != nil {
+				log.Fatalf("Error receiving message from chat client: %v", err)
+				close(waitc)
+			}
+		}
+	}()
+
+	<-waitc
 }
 
 func doScalarCall(client datatypespb.DataTypeServiceClient) {
