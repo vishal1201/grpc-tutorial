@@ -16,6 +16,22 @@ import (
 // 	f float32 = 1.0
 // )
 
+// type cognoDate struct {
+// 	day, month, year int
+// }
+
+// func (x *cognoDate) ProtoReflect() protoreflect.Message {
+// 	mi := &file_person_proto_msgTypes[3]
+// 	if protoimpl.UnsafeEnabled && x != nil {
+// 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+// 		if ms.LoadMessageInfo() == nil {
+// 			ms.StoreMessageInfo(mi)
+// 		}
+// 		return ms
+// 	}
+// 	return mi.MessageOf(x)
+// }
+
 func main() {
 	fmt.Println("DataTypes gRPC client")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
@@ -27,22 +43,14 @@ func main() {
 	gClient := personpb.NewPersonServiceClient(conn)
 	// doScalarCall(gClient)
 	// doEnumCall(gClient)
-	addPerson(gClient, &personpb.PutPersonRequest{
-		Person: &personpb.Person{
-			FirstName: "Linus",
-			LastName:  "Torvalds",
-			Phones: []*personpb.PhoneNumber{
-				&personpb.PhoneNumber{
-					Number: "1111111111",
-					PhType: personpb.PhoneNumber_HOME,
-				},
-			},
-			Age:         51,
-			LastUpdated: timestamppb.Now(),
-		},
-	})
+	// a, err := anypb.New(&cognoDate{
+	// 	day:   17,
+	// 	month: 12,
+	// 	year:  1994,
+	// })
+	addPerson(gClient, &personpb.PutPersonRequest{Person: getPeople()})
 	getPerson(gClient, &personpb.GetPersonRequest{
-		Id: 1,
+		Id: 3,
 	})
 }
 
@@ -123,4 +131,78 @@ func doEnumCall(client datatypespb.DataTypeServiceClient) {
 		log.Fatalf("Error calling TestRPC: %v", err)
 	}
 	fmt.Println(res)
+}
+
+
+func getPeople() []*personpb.Person{
+	return []*personpb.Person{
+		{
+			FirstName: "Linus",
+			LastName:  "Torvalds",
+			Phones: []*personpb.PhoneNumber{
+				{
+					Number: "1111111111",
+					PhType: personpb.PhoneNumber_HOME,
+				},
+			},
+			Age:         51,
+			LastUpdated: timestamppb.Now(),
+			// Extra:       []*anypb.Any{a},
+			Family: map[string]*personpb.Person{
+				"father": {
+					FirstName: "Nils",
+					LastName:  "Torvalds",
+				},
+				"mother": {
+					FirstName: "Anna",
+					LastName:  "Torvalds",
+				},
+			},
+		},
+		{
+			FirstName: "Dennis",
+			LastName:  "Ritchie",
+			Phones: []*personpb.PhoneNumber{
+				{
+					Number: "2222222222",
+					PhType: personpb.PhoneNumber_WORK,
+				},
+			},
+			Age:         70,
+			LastUpdated: timestamppb.Now(),
+			// Extra:       []*anypb.Any{a},
+			Family: map[string]*personpb.Person{
+				"father": {
+					FirstName: "Alistair",
+					LastName:  "Ritchie",
+				},
+				"mother": {
+					FirstName: "Jean McGee",
+					LastName:  "Ritchie",
+				},
+			},
+		},
+		{
+			FirstName: "Vishal",
+			LastName:  "Zambare",
+			Phones: []*personpb.PhoneNumber{
+				{
+					Number: "3333333333",
+					PhType: personpb.PhoneNumber_MOBILE,
+				},
+			},
+			Age:         27,
+			LastUpdated: timestamppb.Now(),
+			// Extra:       []*anypb.Any{a},
+			Family: map[string]*personpb.Person{
+				"father": {
+					FirstName: "Suhdhakar",
+					LastName:  "Zambare",
+				},
+				"mother": {
+					FirstName: "Prarthana",
+					LastName:  "Zambare",
+				},
+			},
+		},
 }

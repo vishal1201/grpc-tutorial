@@ -88,6 +88,7 @@ func (p *personServer) GetPerson(ctx context.Context, req *personpb.GetPersonReq
 	id := req.GetId()
 	fmt.Printf("d: %v, Type d: %T\n", req, req)
 	person := people[id]
+	fmt.Printf("Family: %v | Type:  %T", person.Family, person.Family)
 	res := &personpb.GetPersonResponse{
 		Person: &person,
 	}
@@ -97,11 +98,15 @@ func (p *personServer) GetPerson(ctx context.Context, req *personpb.GetPersonReq
 func (p *personServer) PutPerson(ctx context.Context, req *personpb.PutPersonRequest) (*personpb.PutPersonResponse, error) {
 	// person := req.GetPerson()
 	fmt.Printf("d: %v, Type d: %T\n", req, req)
-	newID := int64(len(people) + 1)
-	people[newID] = *req.GetPerson()
+	var ids []int64
+	for _, person := range req.GetPerson() {
+		id := int64(len(people) + 1)
+		people[id] = *person
+		ids = append(ids, id)
+	}
 	res := &personpb.PutPersonResponse{
 		Result: true,
-		Id:     newID,
+		Id:     ids,
 	}
 	return res, nil
 }

@@ -1,8 +1,10 @@
 syntax="proto3";
 import "google/protobuf/timestamp.proto";
-
+import "google/protobuf/any.proto";
 option go_package="cognologix.com/human/personpb";
+option optimize_for=SPEED;
 
+package human;
 message PhoneNumber {
     string number = 1;
     enum PhoneType {
@@ -13,6 +15,15 @@ message PhoneNumber {
     PhoneType ph_type=2;
 }
 
+message Permanent {
+    string line = 1;
+}
+
+message Communication {
+    string line = 1;
+}
+
+
 message Person {
     int64 id = 1;
     string first_name = 2;
@@ -20,6 +31,12 @@ message Person {
     int32 age = 4;   
     repeated PhoneNumber phones=5;
     google.protobuf.Timestamp last_updated = 6;
+    repeated google.protobuf.Any extra = 7;   
+    oneof address_type {
+        Permanent permanent = 8;
+        Communication communication = 9;
+    }
+    map<string, Person> family = 10;
 }
 
 message GetPersonRequest {
@@ -31,15 +48,16 @@ message GetPersonResponse {
 }
 
 message PutPersonRequest {
-    Person person=1;
+    repeated Person person=1;
 }
 
 message PutPersonResponse {
     bool result=1;
-    int64 id=2;
+    repeated int64 id=2;
 }
 
 service PersonService {
     rpc GetPerson(GetPersonRequest) returns (GetPersonResponse){}
     rpc PutPerson(PutPersonRequest) returns (PutPersonResponse){}
+    rpc PutPeople(PutPersonRequest) returns (PutPersonResponse){}
 }
